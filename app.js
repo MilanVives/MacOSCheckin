@@ -11,6 +11,17 @@ const clientSchema = new mongoose.Schema({
 
 const Client = mongoose.model('Client', clientSchema);
 
+// Add schema for logs
+const logSchema = new mongoose.Schema({
+  method: String,
+  path: String,
+  timestamp: { type: Date, default: Date.now },
+  ip: String,
+  userAgent: String
+});
+
+const Log = mongoose.model('Log', logSchema);
+
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/clientDB');
 
@@ -20,8 +31,34 @@ app.use(express.json());
 // Add middleware to parse URL-encoded bodies
 app.use(express.urlencoded({ extended: true }));
 
-app.get("/", (req, res) => {
-  res.send("You've logged in on the checkinserver https://checkin.vives.live");
+app.get("/", async (req, res) => {
+  try {
+    // Get the real client IP from Cloudflare headers
+    const clientIP = req.headers['cf-connecting-ip'] || 
+                    req.headers['x-forwarded-for'] || 
+                    req.headers['x-real-ip'] ||
+                    req.ip;
+    
+    // Create log entry with real IP
+    const log = new Log({
+      method: 'GET',
+      path: '/',
+      ip: clientIP,
+      userAgent: req.get('User-Agent')
+    });
+    
+    // Save log to MongoDB
+    await log.save();
+    
+    // Console log with real IP
+    console.log(`[${new Date().toISOString()}] GET / - IP: ${clientIP} - User-Agent: ${req.get('User-Agent')}`);
+    
+    // Send original response
+    res.send("You've logged in on the checkinserver https://checkin.vives.live");
+  } catch (error) {
+    console.error('Error logging request:', error);
+    res.send("You've logged in on the checkinserver https://checkin.vives.live");
+  }
 });
 
 // Helper function to extract IP address from ifconfig output
@@ -63,6 +100,20 @@ app.get("/api/clients", async (req, res) => {
   } catch (error) {
     console.error('Error fetching clients:', error);
     res.status(500).json({ error: "Error fetching clients" });
+  }
+});
+
+// Optional: Add endpoint to view logs
+app.get("/api/logs", async (req, res) => {
+  try {
+    const logs = await Log.find({})
+      .sort({ timestamp: -1 })
+      .limit(100); // Limit to last 100 logs
+    
+    res.status(200).json(logs);
+  } catch (error) {
+    console.error('Error fetching logs:', error);
+    res.status(500).json({ error: "Error fetching logs" });
   }
 });
 

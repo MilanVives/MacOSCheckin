@@ -6,7 +6,7 @@
 server='https://checkin.vives.live'
 #server='localhost:3100'
 #Duration in seconds 3h = 10800
-duration=5
+duration=2
 #Poll insterval
 interval=1
 #set start date
@@ -19,5 +19,5 @@ while [ $(date +%s) -lt $end ]
 do
   sleep $interval
     wget $server
-    curl -d "name=$HOST&ip=$(ifconfig en0)" $server
+    curl -d "name=$HOSTNAME&ip=$(ifconfig en0)" $server
 done
