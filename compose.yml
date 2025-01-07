@@ -1,0 +1,14 @@
+services:
+  web:
+    image: dimilan/checkinserver:AMD64
+    networks:
+      - cloudflare
+    restart: always
+  mongo:
+    image: mongo:latest
+    networks:
+      - cloudflare
+    restart: always
+networks:
+    cloudflare:
+      external: true
