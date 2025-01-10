@@ -14,7 +14,7 @@ start=$(date +%s)
 # end date = start + 3 hours 10800 sec
 end=$(( $start + $duration ))
 # Nic
-nice='en0'
+nic='en1'
 
 #curl loop every second
 while [ $(date +%s) -lt $end ]
