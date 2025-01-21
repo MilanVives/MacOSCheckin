@@ -4,6 +4,9 @@ services:
     networks:
       - cloudflare
     restart: always
+    environment:
+      - MONGODB_URI=mongodb://mongo:27017/clientDB
+      - CLEANUP_KEY=your-very-long-secret-key-here
   mongo:
     image: mongo:latest
     networks:
