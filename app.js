@@ -117,6 +117,30 @@ app.get("/api/logs", async (req, res) => {
   }
 });
 
+// Add secure cleanup endpoint with a complex path and key verification
+app.post("/api/v1/maintenance/d41d8cd98f00b204e9800998ecf8427e/cleanup", async (req, res) => {
+  try {
+    // Verify secret key from request header
+    const providedKey = req.headers['x-cleanup-key'];
+    const expectedKey = process.env.CLEANUP_KEY || 'your-very-long-secret-key-here';
+    
+    if (!providedKey || providedKey !== expectedKey) {
+      console.log('Unauthorized cleanup attempt');
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    // Clear both collections
+    await Client.deleteMany({});
+    await Log.deleteMany({});
+    
+    console.log('Database cleared successfully');
+    res.status(200).json({ message: "Database cleared successfully" });
+  } catch (error) {
+    console.error('Error clearing database:', error);
+    res.status(500).json({ error: "Error clearing database" });
+  }
+});
+
 app.listen(3100, () => {
   console.log("Server is running on port 3100");
 });

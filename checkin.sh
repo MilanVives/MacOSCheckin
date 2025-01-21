@@ -6,7 +6,7 @@
 server='https://checkin.vives.live'
 #server='localhost:3100'
 #Duration in seconds 3h = 10800
-duration=2
+duration=50
 #Poll insterval
 interval=1
 #set start date
