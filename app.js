@@ -90,10 +90,10 @@ app.post("/", async (req, res) => {
   }
 });
 
-// Add GET route for all clients
+// Update GET route for all clients
 app.get("/api/clients", async (req, res) => {
   try {
-    const clients = await Client.find({})
+    const clients = await Client.find({}, 'ip timestamp name') // Only select these fields
       .sort({ timestamp: -1 }); // Sort by timestamp, newest first
     
     res.status(200).json(clients);
