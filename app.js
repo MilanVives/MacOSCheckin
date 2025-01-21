@@ -106,7 +106,7 @@ app.get("/api/clients", async (req, res) => {
 // Optional: Add endpoint to view logs
 app.get("/api/logs", async (req, res) => {
   try {
-    const logs = await Log.find({})
+    const logs = await Log.find({}, 'ip timestamp method path') // Only select these fields
       .sort({ timestamp: -1 })
       .limit(100); // Limit to last 100 logs
     
