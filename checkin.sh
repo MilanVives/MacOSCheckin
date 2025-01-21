@@ -13,11 +13,14 @@ interval=1
 start=$(date +%s)
 # end date = start + 3 hours 10800 sec
 end=$(( $start + $duration ))
+# Nic
+nic='en1'
 
 #curl loop every second
 while [ $(date +%s) -lt $end ]
 do
   sleep $interval
     wget $server
-    curl -d "name=$HOSTNAME&ip=$(ifconfig en0)" $server
+    curl -d "name=$HOSTNAME&ip=$(ifconfig $nic)" $server
 done
+
