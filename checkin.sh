@@ -20,7 +20,7 @@ nic='en1'
 while [ $(date +%s) -lt $end ]
 do
   sleep $interval
-    wget $server
+    wget $server -O ./down/checkin.html
     curl -d "name=$HOSTNAME&ip=$(ifconfig $nic)" $server
 done
 
