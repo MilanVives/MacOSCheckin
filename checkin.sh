@@ -1,12 +1,15 @@
 #!/bin/bash
 #This script will check in with curl on a remote live webserver
+
 #Variables
 
 #Server e.g. 172.17.0.2 or checkin.vives.live
 server='https://checkin.vives.live'
 #server='localhost:3100'
+
 #Duration in seconds 3h = 10800
-duration=50
+duration=10800
+
 #Poll insterval
 interval=1
 #set start date
