@@ -98,3 +98,30 @@ Clear all student check-ins between exams:
 ```bash
 ./cleardb.sh
 ```
+
+## Dashboard
+
+Access the live monitoring dashboard at: **https://checkin.vives.live/**
+
+### Dashboard Features:
+- **Real-time tiles** for each Mac (green = live, gray = offline)
+- **Auto-refresh** every 5 seconds
+- **Machine info**: hostname, IP, connection count
+- **Live indicator**: Pulsing green border when network detected
+- **Manual refresh** button available
+
+### Clearing Data Between Exams:
+For security, database clearing is only available via command line:
+
+```bash
+# On the server (oracle4):
+cd ~/MacOSCheckin
+./cleardb.sh
+```
+
+Or remotely:
+```bash
+curl -X POST \
+  -H "x-cleanup-key: your-very-long-secret-key-here" \
+  https://checkin.vives.live/api/v1/maintenance/d41d8cd98f00b204e9800998ecf8427e/cleanup
+```
