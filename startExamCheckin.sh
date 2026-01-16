@@ -23,7 +23,6 @@ echo $! > /tmp/checkin.pid
 # Disown to detach from terminal
 disown
 
-echo "✅
 echo ""
 echo "Process ID: $(cat /tmp/checkin.pid)"
 echo "Duration: 3 hours (configured in checkin.sh)"

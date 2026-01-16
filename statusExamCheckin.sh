@@ -1,14 +1,14 @@
 #!/bin/bash
 # Check status of exam checkin
 
-echo "📊 Exam Checkin Status"
-echo "═══════════════════════"
+echo "Exam Checkin Status"
+echo "==================="
 echo ""
 
 if [ -f /tmp/checkin.pid ]; then
     PID=$(cat /tmp/checkin.pid)
     if ps -p $PID > /dev/null 2>&1; then
-        echo "Status: ✅ RUNNING"
+        echo "Status: RUNNING"
         echo "PID: $PID"
         echo ""
         
@@ -22,16 +22,16 @@ if [ -f /tmp/checkin.pid ]; then
         # Show last few log lines
         if [ -f /tmp/checkin.out ]; then
             echo "Recent activity (last 5 lines):"
-            echo "────────────────────────────────"
+            echo "--------------------------------"
             tail -5 /tmp/checkin.out
         fi
     else
-        echo "Status: ❌ NOT RUNNING"
+        echo "Status: NOT RUNNING"
         echo "PID file exists but process is not active"
         echo "(Process may have completed its duration)"
     fi
 else
-    echo "Status: ❌ NOT RUNNING"
+    echo "Status: NOT RUNNING"
     echo "No PID file found"
 fi
 

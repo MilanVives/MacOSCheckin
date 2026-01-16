@@ -6,16 +6,16 @@ if [ -f /tmp/checkin.pid ]; then
     if ps -p $PID > /dev/null 2>&1; then
         kill $PID
         rm /tmp/checkin.pid
-        echo "✅ Exam checkin stopped (PID: $PID)"
+        echo "Exam checkin stopped (PID: $PID)"
     else
-        echo "⚠️  Process $PID is not running (may have finished)"
+        echo "Process $PID is not running (may have finished)"
         rm /tmp/checkin.pid
     fi
 else
-    echo "⚠️  No PID file found"
+    echo "No PID file found"
     echo "Checking for any running checkin.sh processes..."
     if pkill -f checkin.sh; then
-        echo "✅ Killed running checkin.sh processes"
+        echo "Killed running checkin.sh processes"
     else
         echo "No checkin.sh processes found"
     fi

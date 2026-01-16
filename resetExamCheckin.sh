@@ -1,8 +1,8 @@
 #!/bin/bash
 # Reset exam checkin - stops running process and clears logs
 
-echo "🔄 Resetting Exam Checkin"
-echo "═══════════════════════════"
+echo "Resetting Exam Checkin"
+echo "======================"
 echo ""
 
 # Stop any running process
@@ -32,7 +32,6 @@ if [ -f /tmp/checkin.err ]; then
 fi
 
 echo ""
-echo "✅
 echo ""
 echo "Ready to start a new exam session:"
 echo "  ./startExamCheckin.sh"
