@@ -94,14 +94,7 @@
             background: #2563eb;
         }
         
-        .btn-clear {
-            background: #ef4444;
-            color: white;
-        }
         
-        .btn-clear:hover {
-            background: #dc2626;
-        }
         
         .machines-grid {
             display: grid;
@@ -258,7 +251,6 @@
         
         <div class="controls">
             <button class="btn-refresh" onclick="fetchData()">🔄 Refresh Now</button>
-            <button class="btn-clear" onclick="clearDatabase()">🗑️ Clear All Data</button>
         </div>
         
         <div id="machinesGrid" class="machines-grid">
@@ -378,25 +370,6 @@
             return `${seconds}s ago`;
         }
         
-        async function clearDatabase() {
-            if (!confirm('Clear all data? This cannot be undone.')) return;
-            
-            try {
-                const response = await fetch('/api/v1/maintenance/d41d8cd98f00b204e9800998ecf8427e/cleanup', {
-                    method: 'POST',
-                    headers: { 'x-cleanup-key': 'your-very-long-secret-key-here' }
-                });
-                
-                if (response.ok) {
-                    alert('Database cleared');
-                    fetchData();
-                } else {
-                    alert('Failed to clear');
-                }
-            } catch (error) {
-                alert('Error clearing database');
-            }
-        }
         
         function updateCountdown() {
             countdown--;
