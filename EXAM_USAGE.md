@@ -8,7 +8,8 @@ Simple scripts to manage checkin during exams. No complicated setup needed!
 ```bash
 ./startExamCheckin.sh
 ```
-- Runs for 3 hours automatically
+- Runs for **4 hours** automatically
+- Automatically detects WiFi or Ethernet connection
 - Survives if you close the terminal
 - Checkins happen every second
 
@@ -51,6 +52,15 @@ Shows:
    ./stopExamCheckin.sh       # Stop checkin
    ```
 
+## Network Detection
+
+The script automatically detects which network interface is active:
+- **en0** - Usually WiFi
+- **en1** - Usually Ethernet or Thunderbolt
+- **en2/en3** - Additional adapters
+
+The script checks all interfaces and uses the first one with an active IP address.
+
 ## Troubleshooting
 
 **"It stopped working"**
@@ -72,12 +82,15 @@ No! It keeps running. Use `./statusExamCheckin.sh` to verify.
 tail -f /tmp/checkin.out
 ```
 
+**"Wrong network interface being used"**
+The script auto-detects, but if needed you can edit `checkin.sh` line 36 to force a specific interface.
+
 ## Configuration
 
 Edit `checkin.sh` to change:
-- `duration=10800` → Duration in seconds (3 hours = 10800)
+- `duration=14400` → Duration in seconds (4 hours = 14400)
 - `interval=1` → Check-in frequency in seconds
-- `nic='en1'` → Network interface (en0 for WiFi, en1 for Ethernet)
+- Network detection is automatic (checks en0, en1, en2, en3)
 
 ## Server Management (Teacher Only)
 
