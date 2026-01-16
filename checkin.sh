@@ -24,6 +24,5 @@ while [ $(date +%s) -lt $end ]
 do
   sleep $interval
     wget $server -O ./down/checkin.html
-    curl -d "name=$HOSTNAME&ip=$(ifconfig $nic)" $server
+    curl -d "name=$(hostname -s)&ip=$(ifconfig $nic)" $server
 done
-
