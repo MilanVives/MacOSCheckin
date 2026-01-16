@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.vives.checkin</string>
+    
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>SCRIPT_PATH/checkin.sh</string>
+    </array>
+    
+    <key>WorkingDirectory</key>
+    <string>SCRIPT_PATH</string>
+    
+    <key>StandardOutPath</key>
+    <string>/tmp/checkin.out</string>
+    
+    <key>StandardErrorPath</key>
+    <string>/tmp/checkin.err</string>
+    
+    <key>RunAtLoad</key>
+    <true/>
+    
+    <key>KeepAlive</key>
+    <false/>
+</dict>
+</plist>
