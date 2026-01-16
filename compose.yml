@@ -1,16 +1,20 @@
 services:
   web:
-    image: dimilan/checkinserver:AMD64
+    build: .
+    container_name: macoscheckin-web
     networks:
-      - cloudflare
+      cloudflare:
+        ipv4_address: 172.20.0.3
     restart: always
     environment:
-      - MONGODB_URI=mongodb://mongo:27017/clientDB
+      - MONGODB_URI=mongodb://macoscheckin-mongo:27017/clientDB
       - CLEANUP_KEY=your-very-long-secret-key-here
   mongo:
     image: mongo:latest
+    container_name: macoscheckin-mongo
     networks:
-      - cloudflare
+      cloudflare:
+        ipv4_address: 172.20.0.5
     restart: always
 networks:
     cloudflare:
