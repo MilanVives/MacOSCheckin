@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Monitoring Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        h1 {
+            color: #333;
+            font-size: 28px;
+        }
+        
+        .status-summary {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .status-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .status-live {
+            background: #10b981;
+            color: white;
+        }
+        
+        .status-offline {
+            background: #6b7280;
+            color: white;
+        }
+        
+        .refresh-info {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-refresh {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .btn-refresh:hover {
+            background: #2563eb;
+        }
+        
+        .btn-clear {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .btn-clear:hover {
+            background: #dc2626;
+        }
+        
+        .machines-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .machine-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            border: 3px solid transparent;
+        }
+        
+        .machine-card.live {
+            border-color: #10b981;
+            animation: pulse-green 2s infinite;
+        }
+        
+        .machine-card.offline {
+            background: #f3f4f6;
+            opacity: 0.7;
+        }
+        
+        @keyframes pulse-green {
+            0%, 100% {
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            }
+            50% {
+                box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
+            }
+        }
+        
+        .machine-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .machine-name {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1f2937;
+        }
+        
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .status-indicator.live {
+            background: #10b981;
+            animation: blink 1.5s infinite;
+        }
+        
+        .status-indicator.offline {
+            background: #6b7280;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        
+        .machine-info {
+            margin-bottom: 10px;
+        }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 14px;
+        }
+        
+        .info-label {
+            color: #6b7280;
+            font-weight: 500;
+        }
+        
+        .info-value {
+            color: #1f2937;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+        
+        .connection-count {
+            background: #3b82f6;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .connection-count.warning {
+            background: #f59e0b;
+        }
+        
+        .connection-count.danger {
+            background: #ef4444;
+        }
+        
+        .last-seen {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #e5e7eb;
+            font-size: 12px;
+            color: #6b7280;
+            text-align: center;
+        }
+        
+        .no-data {
+            text-align: center;
+            padding: 60px 20px;
+            background: rgba(255,255,255,0.9);
+            border-radius: 12px;
+            color: #6b7280;
+        }
+        
+        .loading {
+            text-align: center;
+            color: white;
+            font-size: 18px;
+            padding: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div>
+                <h1>🖥️ Exam Monitoring Dashboard</h1>
+                <p style="color: #666; margin-top: 5px;">Real-time network detection</p>
+            </div>
+            <div class="status-summary">
+                <div class="status-badge status-live">
+                    Live: <span id="liveCount">0</span>
+                </div>
+                <div class="status-badge status-offline">
+                    Offline: <span id="offlineCount">0</span>
+                </div>
+                <div class="refresh-info">
+                    Auto-refresh: <span id="countdown">5</span>s
+                </div>
+            </div>
+        </header>
+        
+        <div class="controls">
+            <button class="btn-refresh" onclick="fetchData()">🔄 Refresh Now</button>
+            <button class="btn-clear" onclick="clearDatabase()">🗑️ Clear All Data</button>
+        </div>
+        
+        <div id="machinesGrid" class="machines-grid">
+            <div class="loading">Loading data...</div>
+        </div>
+    </div>
+
+    <script>
+        const REFRESH_INTERVAL = 5000; // 5 seconds
+        const LIVE_THRESHOLD = 10000; // 10 seconds - consider offline if no update
+        let countdown = 5;
+        
+        async function fetchData() {
+            try {
+                const response = await fetch('/api/clients');
+                const data = await response.json();
+                countdown = 5;
+                
+                // Group by hostname
+                const machines = {};
+                data.forEach(entry => {
+                    const name = entry.name || 'Unknown';
+                    if (!machines[name]) {
+                        machines[name] = {
+                            name: name,
+                            connections: [],
+                            latestTimestamp: null
+                        };
+                    }
+                    machines[name].connections.push(entry);
+                    
+                    const timestamp = new Date(entry.timestamp);
+                    if (!machines[name].latestTimestamp || timestamp > machines[name].latestTimestamp) {
+                        machines[name].latestTimestamp = timestamp;
+                        machines[name].latestIp = entry.ip;
+                    }
+                });
+                
+                renderMachines(machines);
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('machinesGrid').innerHTML = 
+                    '<div class="no-data">Error loading data</div>';
+            }
+        }
+        
+        function renderMachines(machines) {
+            const grid = document.getElementById('machinesGrid');
+            const now = new Date();
+            let liveCount = 0;
+            let offlineCount = 0;
+            
+            if (Object.keys(machines).length === 0) {
+                grid.innerHTML = '<div class="no-data">No machines detected yet</div>';
+                document.getElementById('liveCount').textContent = 0;
+                document.getElementById('offlineCount').textContent = 0;
+                return;
+            }
+            
+            let html = '';
+            
+            Object.values(machines).sort((a, b) => b.latestTimestamp - a.latestTimestamp).forEach(machine => {
+                const timeDiff = now - machine.latestTimestamp;
+                const isLive = timeDiff < LIVE_THRESHOLD;
+                const connectionCount = machine.connections.length;
+                
+                if (isLive) liveCount++;
+                else offlineCount++;
+                
+                let countClass = '';
+                if (connectionCount > 10) countClass = 'danger';
+                else if (connectionCount > 5) countClass = 'warning';
+                
+                const timeAgo = formatTimeAgo(timeDiff);
+                
+                html += `
+                    <div class="machine-card ${isLive ? 'live' : 'offline'}">
+                        <div class="machine-header">
+                            <div class="machine-name">${machine.name}</div>
+                            <div class="status-indicator ${isLive ? 'live' : 'offline'}"></div>
+                        </div>
+                        <div class="machine-info">
+                            <div class="info-row">
+                                <span class="info-label">Status</span>
+                                <span class="info-value" style="color: ${isLive ? '#10b981' : '#6b7280'}">
+                                    ${isLive ? '🟢 LIVE' : '⚫ Offline'}
+                                </span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">IP Address</span>
+                                <span class="info-value">${machine.latestIp || 'N/A'}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Connections</span>
+                                <span class="connection-count ${countClass}">${connectionCount}</span>
+                            </div>
+                        </div>
+                        <div class="last-seen">
+                            ${isLive ? 'Active now' : `Last seen ${timeAgo}`}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            grid.innerHTML = html;
+            document.getElementById('liveCount').textContent = liveCount;
+            document.getElementById('offlineCount').textContent = offlineCount;
+        }
+        
+        function formatTimeAgo(ms) {
+            const seconds = Math.floor(ms / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const hours = Math.floor(minutes / 60);
+            
+            if (hours > 0) return `${hours}h ago`;
+            if (minutes > 0) return `${minutes}m ago`;
+            return `${seconds}s ago`;
+        }
+        
+        async function clearDatabase() {
+            if (!confirm('Clear all data? This cannot be undone.')) return;
+            
+            try {
+                const response = await fetch('/api/v1/maintenance/d41d8cd98f00b204e9800998ecf8427e/cleanup', {
+                    method: 'POST',
+                    headers: { 'x-cleanup-key': 'your-very-long-secret-key-here' }
+                });
+                
+                if (response.ok) {
+                    alert('Database cleared');
+                    fetchData();
+                } else {
+                    alert('Failed to clear');
+                }
+            } catch (error) {
+                alert('Error clearing database');
+            }
+        }
+        
+        function updateCountdown() {
+            countdown--;
+            if (countdown <= 0) {
+                countdown = 5;
+                fetchData();
+            }
+            document.getElementById('countdown').textContent = countdown;
+        }
+        
+        // Initial load and auto-refresh
+        fetchData();
+        setInterval(fetchData, REFRESH_INTERVAL);
+        setInterval(updateCountdown, 1000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+// Schema update: Add privateIp, publicIp, interface fields
+const clientSchema = new mongoose.Schema({
+  name: String,
+  privateIp: String,
+  publicIp: String,
+  interface: String,
+  ip: String,  // Keep for backward compatibility
+  timestamp: { type: Date, default: Date.now }
+});

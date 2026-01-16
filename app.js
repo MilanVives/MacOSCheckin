@@ -31,7 +31,8 @@ app.use(express.json());
 // Add middleware to parse URL-encoded bodies
 app.use(express.urlencoded({ extended: true }));
 
-app.get("/", async (req, res) => {
+app.use(express.static("public"));
+app.get("/api/ping", async (req, res) => {
   try {
     // Get the real client IP from Cloudflare headers
     const clientIP = req.headers['cf-connecting-ip'] || 
